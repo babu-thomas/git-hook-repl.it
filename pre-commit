@@ -1,0 +1,26 @@
+#!/usr/bin/env python
+import subprocess
+import os
+from pathlib import Path
+
+
+def execute_shell_command(cmd, work_dir, env_vars={}):
+    pipe = subprocess.Popen(cmd, shell=True, env={**os.environ, **env_vars}, cwd=work_dir,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, error = pipe.communicate()
+    print(out.decode(), error.decode())
+    return out, error
+
+
+def git_get_new_files(repo_path):
+    cmd = 'git diff --cached --name-only --diff-filter A'
+    return execute_shell_command(cmd, repo_path)
+
+
+def main():
+    path = Path('test-repo/').resolve()
+    git_get_new_files(path)
+
+
+if __name__ == "__main__":
+    main()
