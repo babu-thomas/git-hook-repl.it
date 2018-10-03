@@ -14,12 +14,15 @@ def execute_shell_command(cmd, work_dir, env_vars={}):
 
 def git_get_new_files(repo_path):
     cmd = 'git diff --cached --name-only --diff-filter A'
-    return execute_shell_command(cmd, repo_path)
+    files, _ = execute_shell_command(cmd, repo_path)
+    files = files.decode()
+    return files.split('\n')[:-1]
 
 
 def main():
     path = Path('test-repo/').resolve()
-    git_get_new_files(path)
+    files = git_get_new_files(path)
+    print(files)
 
 
 if __name__ == "__main__":
