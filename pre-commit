@@ -19,10 +19,19 @@ def git_get_new_files(repo_path):
     return files.split('\n')[:-1]
 
 
+def git_get_modified_files(repo_path):
+    cmd = 'git diff --cached --name-only --diff-filter M'
+    files, _ = execute_shell_command(cmd, repo_path)
+    files = files.decode()
+    return files.split('\n')[:-1]
+
+
 def main():
     path = Path('test-repo/').resolve()
-    files = git_get_new_files(path)
-    print(files)
+    files_added = git_get_new_files(path)
+    files_modified = git_get_modified_files(path)
+    print(files_added)
+    print(files_modified)
 
 
 if __name__ == "__main__":
