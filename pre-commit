@@ -2,6 +2,8 @@
 import subprocess
 import os
 from pathlib import Path
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 
 def execute_shell_command(cmd, work_dir, env_vars={}):
@@ -31,18 +33,32 @@ def get_file_contents(file):
         return contents
 
 
+def repl_login(driver, username, password):
+    driver.get('https://repl.it/login')
+    username_element = driver.find_element_by_xpath(
+        '//form//input[@name="username"]')
+    username_element.clear()
+    username_element.send_keys(username)
+    password_element = driver.find_element_by_xpath(
+        '//form//input[@name="password"]')
+    password_element.clear()
+    password_element.send_keys(password)
+    password_element.send_keys(Keys.ENTER)
+
+
 def main():
     path = Path('test-repo/').resolve()
     files_added = git_get_new_files(path)
     files_modified = git_get_modified_files(path)
     print(files_added)
     print(files_modified)
-
-    for file in files_added:
-        print(get_file_contents(path / file))
-
-    for file in files_modified:
-        print(get_file_contents(path / file))
+    driver = webdriver.Chrome()
+    username, password = "", ""
+    with open("creds") as f:
+        username = f.readline()[:-1]
+        password = f.readline()
+    repl_login(driver, username, password)
+    input()
 
 
 if __name__ == "__main__":
