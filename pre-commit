@@ -8,7 +8,6 @@ def execute_shell_command(cmd, work_dir, env_vars={}):
     pipe = subprocess.Popen(cmd, shell=True, env={**os.environ, **env_vars}, cwd=work_dir,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, error = pipe.communicate()
-    print(out.decode(), error.decode())
     return out, error
 
 
