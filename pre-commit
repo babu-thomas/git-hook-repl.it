@@ -4,6 +4,9 @@ import os
 from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 def execute_shell_command(cmd, work_dir, env_vars={}):
@@ -46,6 +49,24 @@ def repl_login(driver, username, password):
     password_element.send_keys(Keys.ENTER)
 
 
+def repl_create(driver, repl_name):
+    search_bar_path = '//input[@placeholder="Search"]'
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.XPATH, search_bar_path))
+    )
+    driver.get('https://repl.it/languages/cpp11')
+
+    edit_name_button = driver.find_element_by_xpath(
+        '//*[name()="svg" and @class="pencil-icon-svg"]')
+    edit_name_button.click()
+
+    name_element_path = '//div[contains(concat(" ", normalize-space(@class), " "), " edit-repl ")]//input'
+    name_element = driver.find_element_by_xpath(name_element_path)
+    name_element.clear()
+    name_element.send_keys(repl_name)
+    name_element.send_keys(Keys.ENTER)
+
+
 def main():
     path = Path('test-repo/').resolve()
     files_added = git_get_new_files(path)
@@ -58,6 +79,7 @@ def main():
         username = f.readline()[:-1]
         password = f.readline()
     repl_login(driver, username, password)
+    repl_create(driver, files_modified[0][:-4])
     input()
 
 
