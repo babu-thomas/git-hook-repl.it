@@ -51,12 +51,13 @@ def repl_login(driver, username, password):
     password_element.send_keys(password)
     password_element.send_keys(Keys.ENTER)
 
-
-def repl_create(driver, repl_name, repl_contents):
     search_bar_path = '//input[@placeholder="Search"]'
     WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.XPATH, search_bar_path))
     )
+
+
+def repl_create(driver, repl_name, repl_contents):
     driver.get('https://repl.it/languages/cpp11')
 
     edit_name_button = driver.find_element_by_xpath(
@@ -93,8 +94,8 @@ def main():
         username = f.readline()[:-1]
         password = f.readline()
     repl_login(driver, username, password)
-    repl_create(driver, files_modified[0][:-4],
-                get_file_contents(path / files_modified[0]))
+    # repl_create(driver, files_modified[0][:-4],
+    #             get_file_contents(path / files_modified[0]))
     input()
 
 
