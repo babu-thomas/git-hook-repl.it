@@ -142,6 +142,8 @@ def main():
 
     input()
 
+    driver.quit()
+
 
 if __name__ == "__main__":
     main()
