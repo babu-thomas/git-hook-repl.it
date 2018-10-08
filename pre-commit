@@ -80,6 +80,9 @@ def repl_change_contents(driver, repl_url, repl_contents):
     driver.get(repl_url)
 
     code_editor_path = '//div[contains(concat(" ", normalize-space(@class), " "), " replit-monaco-editor-container ")]'
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, code_editor_path))
+    )
     code_editor_element = driver.find_element_by_xpath(code_editor_path)
     code_editor_element.click()
 
