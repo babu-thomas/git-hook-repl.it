@@ -124,8 +124,11 @@ def main():
     files_added = git_get_new_files(path)
     files_modified = git_get_modified_files(path)
 
-    files_added = [path / file for file in files_added]
-    files_modified = [path / file for file in files_modified]
+    files_added = [
+        path / file for file in files_added if (path / file).stem.endswith('_test')]
+    files_modified = [
+        path / file for file in files_modified if (path / file).stem.endswith('_test')]
+    
     print(files_added)
     print(files_modified)
 
