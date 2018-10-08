@@ -120,7 +120,7 @@ def repl_modify(driver, username, files_modified):
 
 
 def main():
-    path = Path('test-repo/').resolve()
+    path = Path('.').resolve()
     files_added = git_get_new_files(path)
     files_modified = git_get_modified_files(path)
 
@@ -142,9 +142,7 @@ def main():
     repl_login(driver, username, password)
     repl_add(driver, files_added)
     repl_modify(driver, username, files_modified)
-
-    input()
-
+    
     driver.quit()
 
 
