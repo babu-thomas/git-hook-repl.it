@@ -75,13 +75,25 @@ def repl_create(driver, repl_name):
 
     return driver.current_url
 
-    # pyperclip.copy(repl_contents)
-    # code_editor_path = '//div[contains(concat(" ", normalize-space(@class), " "), " replit-monaco-editor-container ")]'
-    # code_editor_element = driver.find_element_by_xpath(code_editor_path)
-    # code_editor_element.click()
-    # actions = ActionChains(driver)
-    # actions.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).send_keys(
-    #     Keys.DELETE).key_down(Keys.CONTROL).send_keys('v').key_up(Keys.CONTROL).perform()
+
+def repl_change_contents(driver, repl_url, repl_contents):
+    driver.get(repl_url)
+
+    code_editor_path = '//div[contains(concat(" ", normalize-space(@class), " "), " replit-monaco-editor-container ")]'
+    code_editor_element = driver.find_element_by_xpath(code_editor_path)
+    code_editor_element.click()
+
+    pyperclip.copy(repl_contents)
+
+    clear_repl = ActionChains(driver)
+    clear_repl.key_down(Keys.CONTROL).send_keys(
+        'a').key_up(Keys.CONTROL).send_keys(Keys.DELETE)
+    clear_repl.perform()
+
+    paste_repl_contents = ActionChains(driver)
+    paste_repl_contents.key_down(
+        Keys.CONTROL).send_keys('v').key_up(Keys.CONTROL)
+    paste_repl_contents.perform()
 
 
 def main():
@@ -96,10 +108,12 @@ def main():
         username = f.readline()[:-1]
         password = f.readline()
     repl_login(driver, username, password)
-    repl_url = repl_create(driver, files_modified[0][:-4])
+    # repl_url = repl_create(driver, files_modified[0][:-4])
+    repl_url = 'https://repl.it/@' + username + '/' + files_modified[0][:-4]
     print(repl_url)
-    # repl_create(driver, files_modified[0][:-4],
-    #             get_file_contents(path / files_modified[0]))
+    file_contents = get_file_contents(path / files_modified[0])
+    repl_change_contents(driver, repl_url, file_contents)
+
     input()
 
 
