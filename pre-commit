@@ -104,23 +104,41 @@ def repl_change_contents(driver, repl_url, repl_contents):
     )
 
 
+def repl_add(driver, files_added):
+    for file in files_added:
+        url = repl_create(driver, file.stem)
+        contents = get_file_contents(file)
+        repl_change_contents(driver, url, contents)
+
+
+def repl_modify(driver, username, files_modified):
+    url_start = f'https://repl.it/@{username}/'
+    for file in files_modified:
+        url = url_start + file.stem
+        contents = get_file_contents(file)
+        repl_change_contents(driver, url, contents)
+
+
 def main():
     path = Path('test-repo/').resolve()
     files_added = git_get_new_files(path)
     files_modified = git_get_modified_files(path)
+
+    files_added = [path / file for file in files_added]
+    files_modified = [path / file for file in files_modified]
     print(files_added)
     print(files_modified)
-    driver = webdriver.Chrome()
+
     username, password = "", ""
     with open("creds") as f:
         username = f.readline()[:-1]
         password = f.readline()
+
+    driver = webdriver.Chrome()
+
     repl_login(driver, username, password)
-    # repl_url = repl_create(driver, files_modified[0][:-4])
-    repl_url = 'https://repl.it/@' + username + '/' + files_modified[0][:-4]
-    print(repl_url)
-    file_contents = get_file_contents(path / files_modified[0])
-    repl_change_contents(driver, repl_url, file_contents)
+    repl_add(driver, files_added)
+    repl_modify(driver, username, files_modified)
 
     input()
 
