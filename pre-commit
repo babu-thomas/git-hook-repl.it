@@ -128,9 +128,12 @@ def main():
         path / file for file in files_added if (path / file).stem.endswith('_test')]
     files_modified = [
         path / file for file in files_modified if (path / file).stem.endswith('_test')]
-    
+
     print(files_added)
     print(files_modified)
+
+    if len(files_added) == 0 and len(files_modified) == 0:
+        return
 
     username, password = "", ""
     with open("creds") as f:
@@ -140,9 +143,13 @@ def main():
     driver = webdriver.Chrome()
 
     repl_login(driver, username, password)
-    repl_add(driver, files_added)
-    repl_modify(driver, username, files_modified)
-    
+
+    if len(files_added) != 0:
+        repl_add(driver, files_added)
+
+    if len(files_modified) != 0:
+        repl_modify(driver, username, files_modified)
+
     driver.quit()
 
 
