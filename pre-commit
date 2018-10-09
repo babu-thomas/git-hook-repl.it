@@ -114,7 +114,7 @@ def repl_add(driver, files_added):
 def repl_modify(driver, username, files_modified):
     url_start = f'https://repl.it/@{username}/'
     for file in files_modified:
-        url = url_start + file.stem
+        url = url_start + file.stem.replace("_", "")
         contents = get_file_contents(file)
         repl_change_contents(driver, url, contents)
 
