@@ -70,7 +70,9 @@ def repl_create(driver, repl_name):
     name_element.send_keys(repl_name)
     name_element.send_keys(Keys.ENTER)
     WebDriverWait(driver, 10).until(
-        EC.title_contains(repl_name)
+        # repl.it site has 60 characters limit for repl title, so check for the presence of first
+        # 60 characters only
+        EC.title_contains(repl_name[:60])
     )
 
     return driver.current_url
